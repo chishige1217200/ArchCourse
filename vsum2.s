@@ -15,6 +15,14 @@ vsum:
 L1:
     beq     $t0, $t3, L2        # break
     mulo    $t1, $t0, 4         # t1 = i * 4
+
+
+
+
+
+
+
+
     addu    $a1, $a0, $t1       # a1 = a0 + t1
     lw      $t2, 0($a1)         # t2に数値をロード
     addu    $s0, $s0, $t2       # v0 = v0 + t2
@@ -34,17 +42,18 @@ main:
     addiu   $fp, $sp, 28        # フレーム・ポインタを設定
 
     la      $a0, array
+
     li      $a1, 3
     jal     vsum
 
     move    $a0, $v0
     li      $v0, 1              # print_int
-    .word   12
+    .word   0x0000000c
 
     lw $ra, 20($sp)             # 戻りアドレスを復元
     lw $fp, 16($sp)             # フレーム・ポインタを復元
     addiu $sp, $sp, 32          # スタック・フレームをポップ
-    j $ra
+    j       $ra
 
     .data
     .align 2

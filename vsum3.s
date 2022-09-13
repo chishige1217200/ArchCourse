@@ -2,49 +2,58 @@
     .align 2
 
 vsum:
-    subu    $sp, $sp, 32        # スタック・フレームは32 バイト長
-    sw      $ra, 20($sp)        # 戻りアドレスを退避
-    sw      $fp, 16($sp)        # 古いフレーム・ポインタを退避
-    sw      $a0, 32($sp)        # a0レジスタをバックアップ
-    sw      $a1, 36($sp)        # a1レジスタをバックアップ
-    .word   27be001c            # フレーム・ポインタを設定
+    .word   0x27bdffe0          # スタック・フレームは32 バイト長
+    .word   0xafbf0014          # 戻りアドレスを退避
+    .word   0xafbe0010          # 古いフレーム・ポインタを退避
+    .word   0xafa40020          # a0レジスタをバックアップ
+    .word   0xafa50024          # a1レジスタをバックアップ
+    .word   0x27be001c          # フレーム・ポインタを設定
 
-    li      $s0, 0              # sum = 0
-    li      $t0, 0              # i = 0
-    move    $t3, $a1            # 終了判定用にデータの要素数をコピー
+    .word   0x34100000          # sum = 0
+    .word   0x34080000          # i = 0
+    .word   0x00055821          # 終了判定用にデータの要素数をコピー
 L1:
-    beq     $t0, $t3, L2        # break
-    mulo    $t1, $t0, 4         # t1 = i * 4
-    addu    $a1, $a0, $t1       # a1 = a0 + t1
-    lw      $t2, 0($a1)         # t2に数値をロード
-    addu    $s0, $s0, $t2       # v0 = v0 + t2
-    addiu   $t0, 1              # i++
-    j       L1
+    .word   0x110b000f          # break
+    .word   0x34010004          # t1 = i * 4
+    .word   0x01010018
+    .word   0x00000810
+    .word   0x00004812
+    .word   0x00094fc3
+    .word   0x10290003
+    .word   0x00000000
+    .word   0x0000000d
+    .word   0x00004812
+    .word   0x00892821          # a1 = a0 + t1
+    .word   0x8caa0000          # t2に数値をロード
+    .word   0x020a8021          # v0 = v0 + t2
+    .word   0x25080001          # i++
+    .word   0x08100012
 L2:
-    move    $v0, $s0            # 戻り値にsumを入れる
-    lw      $ra, 20($sp)        # 戻りアドレスを復元
-    lw      $fp, 16($sp)        # フレーム・ポインタを復元
-    addiu   $sp, $sp, 32        # スタック・フレームをポップ
-    j       $ra
+    .word   0x00101021          # 戻り値にsumを入れる
+    .word   0x8fbf0014          # 戻りアドレスを復元
+    .word   0x8fbe0010          # フレーム・ポインタを復元
+    .word   0x27bd0020          # スタック・フレームをポップ
+    .word   0x03e00008
 
 main:
-    subu    $sp, $sp, 32        # スタック・フレームは32 バイト長
-    sw      $ra, 20($sp)        # 戻りアドレスを退避
-    sw      $fp, 16($sp)        # 古いフレーム・ポインタを退避
-    .word   27be001c            # フレーム・ポインタを設定
+    .word   0x27bdffe0          # スタック・フレームは32 バイト長
+    .word   0xafbf0014          # 戻りアドレスを退避
+    .word   0xafbe0010          # 古いフレーム・ポインタを退避
+    .word   0x27be001c          # フレーム・ポインタを設定
 
-    la      $a0, array
-    li      $a1, 3
-    jal     vsum
+    .word   0x3c011001
+    .word   0x34240000
+    .word   0x34050003
+    .word   0x0c100009
 
-    move    $a0, $v0
-    li      $v0, 1              # print_int
-    .word   12
+    .word   0x00022021
+    .word   0x34020001          # print_int
+    .word   0x0000000c
 
-    lw $ra, 20($sp)             # 戻りアドレスを復元
-    lw $fp, 16($sp)             # フレーム・ポインタを復元
-    addiu $sp, $sp, 32          # スタック・フレームをポップ
-    j $ra
+    .word   0x8fbf0014          # 戻りアドレスを復元
+    .word   0x8fbe0010          # フレーム・ポインタを復元
+    .word   0x27bd0020          # スタック・フレームをポップ
+    .word   0x03e00008
 
     .data
     .align 2
